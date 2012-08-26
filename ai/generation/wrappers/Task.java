@@ -4,17 +4,15 @@
  */
 package ai.generation.wrappers;
 
-import ai.generation.AIGeneration;
-
 /**
  *
  * @author VOLT
  */
 public abstract class Task {
 
-    public abstract int run();
-
+    public abstract int run(Pac pac);
+    
     public void start(Pac pac) {
-        pac.tasks.put(this.run(), this);
+        pac.tasks.put(this.run(pac), this);
     }
 }

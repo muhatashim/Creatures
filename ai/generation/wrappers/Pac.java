@@ -4,8 +4,8 @@
  */
 package ai.generation.wrappers;
 
-import ai.generation.utils.Calculations;
 import ai.generation.AIGeneration;
+import ai.generation.utils.Calculations;
 import java.awt.Point;
 import java.util.Hashtable;
 
@@ -13,13 +13,14 @@ import java.util.Hashtable;
  *
  * @author VOLT
  */
-public class Pac {
+public final class Pac {
 
     private Point p;
     public double health = 100d;
     public double energy = 100d;
     public double size = 10d;
     public double maxSize = 50d;
+    public double love = 5d;
     public Hashtable<Integer, Task> tasks = new Hashtable<>();
 
     public Pac(final Point p) {
@@ -29,8 +30,10 @@ public class Pac {
     public Pac(final Point p, Pac previousKnowledge) {
         this.p = p;
         this.tasks = previousKnowledge.tasks;
-        this.size = previousKnowledge.size / 3d;
-        this.maxSize = (previousKnowledge.maxSize + previousKnowledge.size) / 4d;
+        this.size = previousKnowledge.size / 1.2d;
+        this.maxSize = (previousKnowledge.maxSize + previousKnowledge.size / 3d);
+        this.love = previousKnowledge.love + 1;
+        System.out.println("New born success: " + this.isAlive());
     }
 
     public boolean isAlive() {
@@ -38,7 +41,8 @@ public class Pac {
     }
 
     public boolean makeOffspring() {
-        return health > 20 && energy > 50 && size <= maxSize / 1.3d && size >= 10;
+        this.love -= size - 12;
+        return health > 20 && energy > 50 && size <= maxSize / 1.3d && size >= 10 && this.love > 1;
     }
 
     public Point getLoc() {

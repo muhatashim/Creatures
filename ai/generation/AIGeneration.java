@@ -4,12 +4,14 @@
  */
 package ai.generation;
 
+import ai.generation.utils.Timer;
 import ai.generation.wrappers.Food;
 import ai.generation.wrappers.Pac;
 import ai.generation.wrappers.Task;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +33,7 @@ public class AIGeneration {
         return AIGeneration.instance;
     }
     public JFrame frame = new JFrame();
-    public static final ArrayList<Pac> pacs = new ArrayList<>();
+    public static ArrayList<Pac> pacs = new ArrayList<>();
     public static final Food[] foods = new Food[100];
     /**
      * @param args the command line arguments
@@ -56,11 +58,29 @@ public class AIGeneration {
         } catch (Exception ex) {
             Logger.getLogger(AIGeneration.class.getName()).log(Level.SEVERE, null, ex);
         }
+        resetFood();
+        final Timer t = new Timer(1000);
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (!t.isRunning()) {
+                        resetFood();
+                        t.reset();
+                    }
+                }
+            }
+        };
+        Thread th = new Thread(r);
+        th.start();
+        for (int i = 0; i < 10; i++) {
+            pacs.add(new Pac(new Point(random(0, 500), random(0, 500))));
+        }
+    }
+
+    private static void resetFood() {
         for (int i = 0; i < foods.length; i++) {
             foods[i] = new Food(new Point(random(0, 500), random(0, 500)));
-        }
-        for (int i = 0; i < 100; i++) {
-            pacs.add(new Pac(new Point(random(0, 500), random(0, 500))));
         }
     }
 
@@ -73,12 +93,18 @@ public class AIGeneration {
     }
 
     public static Point randomize(Point p, int radius) {
-        if (p.x - radius <= 0 || p.y - radius <= 0) {
-            return p;
-        }
+        System.out.println("New random");
         return new Point(random(p.x - radius, p.x + radius + 1), random(p.y - radius, p.y + radius + 1));
     }
     int births = 0;
+    private static int appendY = 10;
+    private static int appendX = 510;
+
+    public static void appendInfo(String text, Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawString(text, appendX, appendY);
+        appendY += 15;
+    }
 
     public void run(Graphics g) {
         g.setColor(Color.green);
@@ -101,26 +127,31 @@ public class AIGeneration {
 
         int fi = pacs.size();
         for (int i = 0; i < fi; i++) {
-            final Pac pac = pacs.get(i);
+            Pac pac = pacs.get(i);
+            System.out.println("Ded1 " + pac.health + ", " + pac.energy + ", " + pac.love + ", " + pac.size + " (" + pac.maxSize + ")");
             if (pac.isAlive()) {
                 Object[] ints = pac.tasks.keySet().toArray();
                 if (ints.length > 0) {
-                    //System.out.println(ints.length);
                     Arrays.sort(ints);
                     int ind = (int) ints[ints.length - 1];
+                    //System.out.println("Brain size " + ints.length + " { " + Arrays.toString(ints) + " }");
                     Task task = pac.tasks.get(ind);
+
                     task.start(pac);
+                    //System.out.println("Started ");
+                    //System.out.println("Started previous knowledge task");
                 } else {
                     Task hardCodeStart = new Task() {
                         @Override
-                        public int run() {
+                        public int run(Pac pac) {
                             if (pac.isAlive()) {
-                                int e = (int) pac.energy;
-                                System.out.println("ee " + e);
-                                pac.setLoc(randomize(pac.getLoc(), e));
+                                double e = pac.energy;
+                                //System.out.println("ee " + e);
+                                pac.setLoc(randomize(pac.getLoc(), 10));
                                 pac.update();
                                 return (int) pac.health;
                             } else {
+                                System.out.println("Ded2 " + pac.health + ", " + pac.energy + ", " + pac.love + ", " + pac.size + " (" + pac.maxSize + ")");
                                 return 0;
                             }
                         }
@@ -132,12 +163,24 @@ public class AIGeneration {
                     births++;
                 }
             }
+            System.out.println("Ded3 " + pac.health + ", " + pac.energy + ", " + pac.love + ", " + pac.size + " (" + pac.maxSize + ")");
+
         }
         g.setColor(Color.black);
         g.setFont(new Font("Tahoma", 0, 15));
-        g.drawString("Eaten: " + eaten, 520, 20);
-        g.drawString("New borns: " + births, 520, 35);
 
+        float avgLove = 0;
+        for (Pac pac : pacs) {
+            avgLove += pac.love;
+        }
+        avgLove = avgLove / pacs.size();
+
+        appendInfo("Eaten: " + eaten, g);
+        appendInfo("New borns: " + births, g);
+        appendInfo("Average love: " + avgLove, g);
+        System.gc();
+        
+        appendY = 520;
 //        try {
 //            Thread.sleep(500);
 //        } catch (InterruptedException ex) {

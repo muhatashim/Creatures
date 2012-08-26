@@ -4,6 +4,7 @@
  */
 package ai.generation.wrappers;
 
+import ai.generation.utils.Calculations;
 import ai.generation.AIGeneration;
 import java.awt.Point;
 import java.util.Hashtable;
@@ -19,7 +20,7 @@ public class Pac {
     public double energy = 100d;
     public double size = 10d;
     public double maxSize = 50d;
-    public Hashtable tasks = new Hashtable<Integer, Task>();
+    public Hashtable<Integer, Task> tasks = new Hashtable<>();
 
     public Pac(final Point p) {
         this.p = p;

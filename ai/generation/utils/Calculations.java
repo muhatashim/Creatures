@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.generation.wrappers;
+package ai.generation.utils;
 
 import java.awt.Point;
 

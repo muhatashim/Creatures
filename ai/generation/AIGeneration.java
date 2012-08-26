@@ -108,17 +108,21 @@ public class AIGeneration {
                     //System.out.println(ints.length);
                     Arrays.sort(ints);
                     int ind = (int) ints[ints.length - 1];
-                    Task task = (Task) pac.tasks.get(ind);
+                    Task task = pac.tasks.get(ind);
                     task.start(pac);
                 } else {
                     Task hardCodeStart = new Task() {
                         @Override
                         public int run() {
-                            int e = (int) pac.energy;
-                            System.out.println("ee " + e);
-                            pac.setLoc(randomize(pac.getLoc(), e));
-                            pac.update();
-                            return (int) pac.health;
+                            if (pac.isAlive()) {
+                                int e = (int) pac.energy;
+                                System.out.println("ee " + e);
+                                pac.setLoc(randomize(pac.getLoc(), e));
+                                pac.update();
+                                return (int) pac.health;
+                            } else {
+                                return 0;
+                            }
                         }
                     };
                     hardCodeStart.start(pac);

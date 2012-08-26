@@ -41,7 +41,7 @@ public final class Pac {
     }
 
     public boolean makeOffspring() {
-        this.love -= size - 12;
+        this.love -= size - 20; //changing 12 to higher would make larger populations
         return health > 20 && energy > 50 && size <= maxSize / 1.3d && size >= 10 && this.love > 1;
     }
 

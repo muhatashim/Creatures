@@ -21,8 +21,11 @@ public class Paint extends javax.swing.JPanel {
 
     @Override
     public void paint(Graphics g) {
-        AIGeneration.get().run(g);
-        AIGeneration.get().frame.repaint();
+        if (AIGeneration.get().run(g)) {
+            AIGeneration.get().frame.repaint();
+        } else {
+            AIGeneration.reset= true;
+        }
     }
 
     /**

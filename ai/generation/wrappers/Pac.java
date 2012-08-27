@@ -33,7 +33,6 @@ public final class Pac {
         this.size = previousKnowledge.size / 1.2d;
         this.maxSize = (previousKnowledge.maxSize + previousKnowledge.size / 3d);
         this.love = previousKnowledge.love + 1;
-        System.out.println("New born success: " + this.isAlive());
     }
 
     public boolean isAlive() {
@@ -41,7 +40,7 @@ public final class Pac {
     }
 
     public boolean makeOffspring() {
-        this.love -= size - 20; //changing 12 to higher would make larger populations
+        this.love -= size - 12; //changing 12 to higher would make larger populations
         return health > 20 && energy > 50 && size <= maxSize / 1.3d && size >= 10 && this.love > 1;
     }
 

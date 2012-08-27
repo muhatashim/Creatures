@@ -173,23 +173,27 @@ public class AIGeneration extends RetardedMethods {
         g.setColor(Color.black);
         g.setFont(new Font("Tahoma", 0, 15));
 
-        float avgLove = 0;
+        float avgLove = 0f;
+        float avgBrain = 0f;
         int population = 0;
-        double avgSize = 0d;
+        float avgSize = 0f;
         for (Pac pac : pacs) {
             if (pac.isAlive()) {
                 avgLove += pac.love;
                 avgSize += pac.size;
+                avgBrain += pac.tasks.size();
                 population++;
             }
         }
         avgLove = avgLove / pacs.size();
         avgSize = avgSize / pacs.size();
+        avgBrain = avgBrain / pacs.size();
 
         appendInfo("Eaten: " + eaten, g);
         appendInfo("Food available: " + foodAvail, g);
         appendInfo("New borns: " + births, g);
         appendInfo("Average love: " + avgLove, g);
+        appendInfo("Average brain size: " + avgBrain, g);
         appendInfo("Births: " + pacs.size(), g);
         appendInfo("Population: " + population, g);
         appendInfo("Average size: " + avgSize, g);
